@@ -86,8 +86,39 @@ elif pressed[K_RIGHT]:
 
 ## 增加上下方向
 
+Rect.move_ip(0,1)
+Rect.move_ip(0,-1)
+
 ## 实现方块类
 
+### draw 方法
+
+将单个 block 绘制到屏幕上
+
+```py
+def draw(self,screen):
+    screen.blit(self.img,self.rect)
+```
+
+### update 方法
+
+当用户点击对应按键的时候更新当前帧的 block 位置
+
+```py
+def update(self):
+    pressed=pygame.key.get_pressed()
+    if pressed[K_LEFT]:
+        self.rect.move_ip(-1,0)
+    elif pressed[K_RIGHT]:
+        self.rect.move_ip(1,0)
+    elif pressed[K_UP]:
+        self.rect.move_ip(0,-1)
+    elif pressed[K_DOWN]:
+        self.rect.move_ip(0,1)
+```
+
+### 用指定参数初始化
+blockType:
 ## 多实例
 
 ## 拆分文件

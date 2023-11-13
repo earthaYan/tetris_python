@@ -1,7 +1,6 @@
 import pygame
 from pygame.locals import *
-from const import *
-
+from const import * 
 class Block(pygame.sprite.Sprite):
     def __init__(self,blockType,rowIdx,colIdx,width,height,relPos):
         super().__init__()
@@ -14,11 +13,12 @@ class Block(pygame.sprite.Sprite):
         self.loadImage()
         self.updateImagePos()
     def loadImage(self):
-        self.img=pygame.image.load(BLOCK_RES[self.blockType])
-        self.img=pygame.transform.scale(self.img,(self.width,self.height))
+        self.image=pygame.image.load(BLOCK_RES[self.blockType])
+        self.image=pygame.transform.scale(self.image,(self.width,self.height))
     def updateImagePos(self):
-        self.rect=self.img.get_rect()
-        self.rect.left=self.relPos[0]+self.width*self.colIdx   
+        self.rect=self.image.get_rect()
+        # 设置方块对象x轴的位置坐标
+        self.rect.left=self.relPos[0]+self.width*self.colIdx
         self.rect.top=self.relPos[1]+self.height*self.rowIdx
     def update(self):
         pressed=pygame.key.get_pressed()
@@ -30,6 +30,5 @@ class Block(pygame.sprite.Sprite):
             self.rect.move_ip(0,-1)
         elif pressed[K_DOWN]:
             self.rect.move_ip(0,1)
-    def draw(self,screen):
-        screen.blit(self.img,self.rect)
-        
+    def draw(self,surface):
+        surface.blit(self.image,self.rect)
