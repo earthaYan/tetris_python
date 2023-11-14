@@ -21,6 +21,7 @@ class BlockGroup(object):
     def __init__(self,width,height,blockConfigList,relPos):
         super().__init__()
         self.blocks=[]
+        self.time=0
         for config in blockConfigList:
             blk=Block(config['blockType'],config['rowIdx'],config['colIdx'],width,height,relPos)
             self.blocks.append(blk)
@@ -28,3 +29,10 @@ class BlockGroup(object):
     def draw(self,surface):
         for b in self.blocks:
             b.draw(surface)
+
+    def update(self):
+        self.time+=1
+        if self.time>=1000:
+            self.time=0
+            for b in self.blocks:
+                b.drop()

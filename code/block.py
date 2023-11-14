@@ -32,3 +32,6 @@ class Block(pygame.sprite.Sprite):
             self.rect.move_ip(0,1)
     def draw(self,surface):
         surface.blit(self.image,self.rect)
+    def drop(self):
+        self.rowIdx+=1
+        self.updateImagePos()
