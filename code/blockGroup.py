@@ -5,7 +5,7 @@ from const import *
 from block import *
 
 class BlockGroup(object):
-    def GenerateBlockConfig(rowIdx,colIdx):
+    def GenerateBlockGroupConfig(rowIdx,colIdx):
         idx=random.randint(0,len(BLOCK_SHAPE)-1)
         bType=random.randint(0,BlockType.BLOCKMAX-1)
         configList=[]
@@ -18,10 +18,11 @@ class BlockGroup(object):
             configList.append(config)
         return configList
     
-    def __init__(self,width,height,blockConfigList,relPos):
+    def __init__(self,blockGroupType,width,height,blockConfigList,relPos):
         super().__init__()
         self.blocks=[]
         self.time=0
+        self.blockGroupType=blockGroupType
         for config in blockConfigList:
             blk=Block(config['blockType'],config['rowIdx'],config['colIdx'],width,height,relPos)
             self.blocks.append(blk)
@@ -32,7 +33,8 @@ class BlockGroup(object):
 
     def update(self):
         self.time+=1
-        if self.time>=1000:
-            self.time=0
-            for b in self.blocks:
-                b.drop()
+        if self.blockGroupType==BlockGroupType.DROP:
+            if self.time>=1000:
+                self.time=0
+                for b in self.blocks:
+                    b.drop()

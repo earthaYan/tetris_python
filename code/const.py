@@ -27,3 +27,10 @@ BLOCK_SHAPE=[
     [(0,0),(0,1),(1,1),(1,2)], #z字形
     [(0,1),(1,0),(1,1),(1,2)]  #飞机形
 ]
+
+class BlockGroupType:
+    FIXED=0
+    DROP=1
+    
+BLOCK_SIZE_W=32
+BLOCK_SIZE_H=32
