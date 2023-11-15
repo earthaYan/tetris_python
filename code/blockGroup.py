@@ -3,6 +3,7 @@ import pygame,sys
 from pygame.locals import *
 from const import *
 from block import *
+from utils import *
 
 class BlockGroup(object):
     def GenerateBlockGroupConfig(rowIdx,colIdx):
@@ -22,6 +23,8 @@ class BlockGroup(object):
         super().__init__()
         self.blocks=[]
         self.time=0
+        self.pressTime={}
+        self.dropInterval=300
         self.blockGroupType=blockGroupType
         for config in blockConfigList:
             blk=Block(config['blockType'],config['rowIdx'],config['colIdx'],width,height,relPos)
@@ -32,10 +35,12 @@ class BlockGroup(object):
             b.draw(surface)
 
     def update(self):
-        self.time+=1
+        oldTime=self.time
+        curTime=getCurrentTime()
+        diffTime=curTime-oldTime
         if self.blockGroupType==BlockGroupType.DROP:
-            if self.time>=1000:
-                self.time=0
+            if diffTime>=self.dropInterval:
+                self.time=getCurrentTime()
                 for b in self.blocks:
                     b.drop()
             self.keyDownHandler()
@@ -51,9 +56,17 @@ class BlockGroup(object):
     def addBlocks(self,blk):
         self.blocks.append(blk)
         
+    # 检测上次按下时间               
+    def checkAndSetPressTime(self,key):
+        ret=False
+        if getCurrentTime()-self.pressTime.get(key,0)>30:
+            ret=True
+        self.pressTime[key]=getCurrentTime()
+        return ret
+    
     def keyDownHandler(self):
         pressed=pygame.key.get_pressed()
-        if pressed[K_LEFT]:
+        if pressed[K_LEFT] and self.checkAndSetPressTime(K_LEFT):
             b=True
             for blk in self.blocks:
                 if blk.isLeftBound():
@@ -62,7 +75,7 @@ class BlockGroup(object):
             if b:
                 for blk in self.blocks:
                     blk.doLeft()      
-        elif pressed[K_RIGHT]:
+        elif pressed[K_RIGHT] and self.checkAndSetPressTime(K_RIGHT):
             b=True
             for blk in self.blocks:
                 if blk.isRightBound():
@@ -70,4 +83,8 @@ class BlockGroup(object):
                     break
             if b:
                 for blk in self.blocks:
-                    blk.doRight()      
+                    blk.doRight() 
+        elif pressed[K_DOWN]:
+            self.dropInterval=30
+        else:
+            self.dropInterval=700
