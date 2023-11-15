@@ -87,4 +87,4 @@ class BlockGroup(object):
         elif pressed[K_DOWN]:
             self.dropInterval=30
         else:
-            self.dropInterval=700
+            self.dropInterval=800
