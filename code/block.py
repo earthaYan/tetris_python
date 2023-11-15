@@ -20,16 +20,7 @@ class Block(pygame.sprite.Sprite):
         # 设置方块对象x轴的位置坐标
         self.rect.left=self.relPos[0]+self.width*self.colIdx
         self.rect.top=self.relPos[1]+self.height*self.rowIdx
-    def update(self):
-        pressed=pygame.key.get_pressed()
-        if pressed[K_LEFT]:
-            self.rect.move_ip(-1,0)
-        elif pressed[K_RIGHT]:
-            self.rect.move_ip(1,0)
-        elif pressed[K_UP]:
-            self.rect.move_ip(0,-1)
-        elif pressed[K_DOWN]:
-            self.rect.move_ip(0,1)
+
     def draw(self,surface):
         surface.blit(self.image,self.rect)
     def drop(self):

@@ -38,6 +38,7 @@ class BlockGroup(object):
                 self.time=0
                 for b in self.blocks:
                     b.drop()
+            self.keyDownHandler()
                     
     def getBlockIndexes(self):
         return [block.getIndex() for block in self.blocks]
@@ -49,3 +50,24 @@ class BlockGroup(object):
         self.blocks=[]
     def addBlocks(self,blk):
         self.blocks.append(blk)
+        
+    def keyDownHandler(self):
+        pressed=pygame.key.get_pressed()
+        if pressed[K_LEFT]:
+            b=True
+            for blk in self.blocks:
+                if blk.isLeftBound():
+                    b=False
+                    break
+            if b:
+                for blk in self.blocks:
+                    blk.doLeft()      
+        elif pressed[K_RIGHT]:
+            b=True
+            for blk in self.blocks:
+                if blk.isRightBound():
+                    b=False
+                    break
+            if b:
+                for blk in self.blocks:
+                    blk.doRight()      
