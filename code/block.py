@@ -35,3 +35,19 @@ class Block(pygame.sprite.Sprite):
     def drop(self):
         self.rowIdx+=1
         self.updateImagePos()
+    def getIndex(self):
+        # 获取block当前的坐标
+        return (int(self.rowIdx),int(self.colIdx))
+    def getNextIndex(self):
+        # 获取block下落之后的坐标
+        return (int(self.rowIdx+1),int(self.colIdx))
+    def isLeftBound(self):
+        # 边界判断
+        return self.colIdx==0
+    def isRightBound(self):
+        return self.colIdx==GAME_COL-1
+    def doLeft(self):
+        # 左右移动
+        self.colIdx-=1
+    def doRight(self):
+        self.colIdx+=1

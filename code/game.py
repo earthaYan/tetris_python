@@ -19,6 +19,12 @@ class Game(pygame.sprite.Sprite):
             self.dropBlockGroup.update()
         else :
             self.generateDropBlockGroup()
+        if self.willCollide():
+            blocks=self.dropBlockGroup.getBlocks()
+            for blk in blocks:
+                self.fixedBlockGroup.addBlocks(blk)
+            self.dropBlockGroup.clearBlocks()
+            self.dropBlockGroup=None
     
     def draw(self):
         self.fixedBlockGroup.draw(self.surface)
@@ -27,3 +33,19 @@ class Game(pygame.sprite.Sprite):
             
     def getRelPos(self):
         return (240,50)
+    
+    def willCollide(self):
+        # 碰撞检测函数
+        hash={}
+        allIndexes=self.fixedBlockGroup.getBlockIndexes()
+        for idx in allIndexes:
+            hash[idx]=1
+        dropIndexes=self.dropBlockGroup.getNextBlockIndexes()
+        for dropIdx in dropIndexes:
+            if hash.get(dropIdx):
+                return True
+            if dropIdx[0]>=GAME_ROW:
+                return True
+        return False
+            
+        

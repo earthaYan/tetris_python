@@ -38,3 +38,14 @@ class BlockGroup(object):
                 self.time=0
                 for b in self.blocks:
                     b.drop()
+                    
+    def getBlockIndexes(self):
+        return [block.getIndex() for block in self.blocks]
+    def getNextBlockIndexes(self):
+        return [block.getNextIndex() for block in self.blocks]
+    def getBlocks(self):
+        return self.blocks
+    def clearBlocks(self):
+        self.blocks=[]
+    def addBlocks(self,blk):
+        self.blocks.append(blk)
