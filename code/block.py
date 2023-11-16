@@ -30,7 +30,7 @@ class Block(pygame.sprite.Sprite):
 
     def draw(self,surface):
         self.updateImagePos()
-        if self.blink and self.blinkCount%2==0:
+        if self.blink and self.blinkCount%2==1:
             return 
         surface.blit(self.image,self.rect)
     def drop(self):
