@@ -30,6 +30,8 @@ class BlockGroup(object):
         self.pressTime={}
         self.dropInterval=300
         self.isEliminating=False
+        self.eliminateRow = 0
+        self.eliminateTime=0
         self.blockGroupType=blockGroupType
         for config in blockConfigList:
             blk=Block(config['blockType'],config['rowIdx'],config['colIdx'],config['blockShape'],config['blockRot'],config['blockGroupIdx'],width,height,relPos)
@@ -51,6 +53,17 @@ class BlockGroup(object):
             self.keyDownHandler()
         for blk in self.blocks:
             blk.update()
+        if self.IsEliminating():
+            if getCurrentTime()-self.eliminateTime>500:
+                tmpBlocks=[]
+                for blk in self.blocks:
+                    if blk.getIndex()[0]!=self.eliminateRow:
+                        if blk.getIndex()[0]<self.eliminateRow:
+                            blk.drop()
+                        tmpBlocks.append(blk)
+                self.blocks=tmpBlocks
+                self.setEliminate(False)
+                        
                     
     def getBlockIndexes(self):
         return [block.getIndex() for block in self.blocks]
@@ -104,6 +117,8 @@ class BlockGroup(object):
         for col in range(0,GAME_COL):
             idx=(row,col)
             eliminateRow[idx]=1
+        self.setEliminate(True)
+        self.eliminateRow=row
         for blk in self.blocks:
             if eliminateRow.get(blk.getIndex()):
                 blk.startBlink()
