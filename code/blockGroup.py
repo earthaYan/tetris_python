@@ -62,9 +62,7 @@ class BlockGroup(object):
                             blk.drop()
                         tmpBlocks.append(blk)
                 self.blocks=tmpBlocks
-                self.setEliminate(False)
-                        
-                    
+                self.setEliminate(False)       
     def getBlockIndexes(self):
         return [block.getIndex() for block in self.blocks]
     def getNextBlockIndexes(self):
