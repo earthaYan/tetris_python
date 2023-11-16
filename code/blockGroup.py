@@ -7,14 +7,18 @@ from utils import *
 
 class BlockGroup(object):
     def GenerateBlockGroupConfig(rowIdx,colIdx):
-        idx=random.randint(0,len(BLOCK_SHAPE)-1)
+        shapeIdx=random.randint(0,len(BLOCK_SHAPE)-1)
         bType=random.randint(0,BlockType.BLOCKMAX-1)
         configList=[]
-        for x in range(len(BLOCK_SHAPE[idx])):
+        rotIdx=0
+        for x in range(len(BLOCK_SHAPE[shapeIdx][rotIdx])):
             config={
                 'blockType':bType,
-                'rowIdx':rowIdx+BLOCK_SHAPE[idx][x][0],
-                'colIdx':colIdx+BLOCK_SHAPE[idx][x][1]
+                'blockShape':shapeIdx,
+                'blockRot':rotIdx,
+                'blockGroupIdx':x,
+                'rowIdx':rowIdx,
+                'colIdx':colIdx,
             }
             configList.append(config)
         return configList
@@ -27,7 +31,7 @@ class BlockGroup(object):
         self.dropInterval=300
         self.blockGroupType=blockGroupType
         for config in blockConfigList:
-            blk=Block(config['blockType'],config['rowIdx'],config['colIdx'],width,height,relPos)
+            blk=Block(config['blockType'],config['rowIdx'],config['colIdx'],config['blockShape'],config['blockRot'],config['blockGroupIdx'],width,height,relPos)
             self.blocks.append(blk)
             
     def draw(self,surface):
@@ -88,3 +92,7 @@ class BlockGroup(object):
             self.dropInterval=30
         else:
             self.dropInterval=800
+        if pressed[K_UP] and self.checkAndSetPressTime(K_UP):
+            for blk in self.blocks:
+                blk.doRotate()
+            

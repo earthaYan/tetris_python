@@ -2,11 +2,14 @@ import pygame
 from pygame.locals import *
 from const import * 
 class Block(pygame.sprite.Sprite):
-    def __init__(self,blockType,rowIdx,colIdx,width,height,relPos):
+    def __init__(self,blockType,baseRowIdx,baseColIdx,blockShape,blockRot,blockGroupIdx,width,height,relPos):
         super().__init__()
-        self.blockType=blockType
-        self.rowIdx=rowIdx
-        self.colIdx=colIdx
+        self.blockType=blockType #颜色
+        self.blockShape=blockShape #形状
+        self.blockRot=blockRot # 旋转的下标
+        self.baseRowIdx=baseRowIdx
+        self.baseColIdx=baseColIdx
+        self.blockGroupIdx=blockGroupIdx
         self.width=width
         self.height=height
         self.relPos=relPos
@@ -22,10 +25,19 @@ class Block(pygame.sprite.Sprite):
         self.rect.top=self.relPos[1]+self.height*self.rowIdx
 
     def draw(self,surface):
+        self.updateImagePos()
         surface.blit(self.image,self.rect)
     def drop(self):
-        self.rowIdx+=1
-        self.updateImagePos()
+        self.baseRowIdx+=1
+    def doLeft(self):
+        self.baseColIdx-=1
+    def doRight(self):
+        self.baseColIdx+=1
+        
+    def doRotate(self):
+        self.blockRot+=1
+        if self.blockRot>=len(BLOCK_SHAPE[self.blockShape]):
+            self.blockRot=0
     def getIndex(self):
         # 获取block当前的坐标
         return (int(self.rowIdx),int(self.colIdx))
@@ -37,8 +49,12 @@ class Block(pygame.sprite.Sprite):
         return self.colIdx==0
     def isRightBound(self):
         return self.colIdx==GAME_COL-1
-    def doLeft(self):
-        # 左右移动
-        self.colIdx-=1
-    def doRight(self):
-        self.colIdx+=1
+    def getBlockConfigIndex(self):
+        return BLOCK_SHAPE[self.blockShape][self.blockRot][self.blockGroupIdx]
+    
+    @property
+    def rowIdx(self):
+        return self.baseRowIdx+self.getBlockConfigIndex()[0]
+    @property
+    def colIdx(self):
+        return self.baseColIdx+self.getBlockConfigIndex()[1]
