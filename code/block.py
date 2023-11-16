@@ -27,7 +27,6 @@ class Block(pygame.sprite.Sprite):
         # 设置方块对象x轴的位置坐标
         self.rect.left=self.relPos[0]+self.width*self.colIdx
         self.rect.top=self.relPos[1]+self.height*self.rowIdx
-
     def draw(self,surface):
         self.updateImagePos()
         if self.blink and self.blinkCount%2==1:
@@ -38,8 +37,7 @@ class Block(pygame.sprite.Sprite):
     def doLeft(self):
         self.baseColIdx-=1
     def doRight(self):
-        self.baseColIdx+=1
-        
+        self.baseColIdx+=1       
     def doRotate(self):
         self.blockRot+=1
         if self.blockRot>=len(BLOCK_SHAPE[self.blockShape]):
@@ -60,6 +58,9 @@ class Block(pygame.sprite.Sprite):
     def startBlink(self):
         self.blink=True
         self.blinkTime=getCurrentTime()
+    def setBaseIndex(self,baseRowIdx,baseColIdx):
+        self.baseRowIdx=baseRowIdx
+        self.baseColIdx=baseColIdx
     def update(self):
         # 更新闪烁次数
         if self.blink:

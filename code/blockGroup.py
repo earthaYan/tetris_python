@@ -36,6 +36,9 @@ class BlockGroup(object):
         for config in blockConfigList:
             blk=Block(config['blockType'],config['rowIdx'],config['colIdx'],config['blockShape'],config['blockRot'],config['blockGroupIdx'],width,height,relPos)
             self.blocks.append(blk)
+    def setBaseIndexes(self,baseRow,baseCol):
+        for blk in self.blocks:
+            blk.setBaseIndex(baseRow,baseCol)
             
     def draw(self,surface):
         for b in self.blocks:

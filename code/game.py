@@ -11,11 +11,18 @@ class Game(pygame.sprite.Sprite):
         self.score=0
         self.fixedBlockGroup=BlockGroup(BlockGroupType.FIXED,BLOCK_SIZE_W,BLOCK_SIZE_H,[],self.getRelPos())
         self.dropBlockGroup=None
+        self.nextBlockGroup=None
+        self.generateNextDropBlockGroup()
+
     
     def generateDropBlockGroup(self):
-        conf=BlockGroup.GenerateBlockGroupConfig(0,GAME_COL/2-1)
-        self.dropBlockGroup=BlockGroup(BlockGroupType.DROP,BLOCK_SIZE_W,BLOCK_SIZE_H,conf,self.getRelPos())
-
+        self.dropBlockGroup=self.nextBlockGroup
+        self.dropBlockGroup.setBaseIndexes(0,GAME_COL/2-1)
+        self.generateNextDropBlockGroup()
+        
+    def generateNextDropBlockGroup(self):
+        conf=BlockGroup.GenerateBlockGroupConfig(0,GAME_COL+3)
+        self.nextBlockGroup=BlockGroup(BlockGroupType.DROP,BLOCK_SIZE_W,BLOCK_SIZE_H,conf,self.getRelPos())
     def update(self):
         if self.isGameOver:
             return
@@ -41,6 +48,7 @@ class Game(pygame.sprite.Sprite):
         self.fixedBlockGroup.draw(self.surface)
         if self.dropBlockGroup:
             self.dropBlockGroup.draw(self.surface)
+        self.nextBlockGroup.draw(self.surface)
         if self.isGameOver:
             self.surface.fill((0,0,0))
             rect=self.gameOverImage.get_rect()
