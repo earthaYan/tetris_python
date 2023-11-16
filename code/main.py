@@ -7,7 +7,7 @@ from blockGroup import *
 from game import *
 
 pygame.init()
-DISPLAYSURF=pygame.display.set_mode((800,600))
+DISPLAYSURF=pygame.display.set_mode((GAME_WIDTH_SIZE,GAME_HEIGHT_SIZE))
 game=Game(DISPLAYSURF)
 while True:
     for event in pygame.event.get():
