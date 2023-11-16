@@ -15,6 +15,8 @@ class Game(pygame.sprite.Sprite):
     def update(self):
         # 执行两者的update
         self.fixedBlockGroup.update()
+        if self.fixedBlockGroup.IsEliminating():
+            return 
         if self.dropBlockGroup:
             self.dropBlockGroup.update()
         else :
@@ -25,6 +27,7 @@ class Game(pygame.sprite.Sprite):
                 self.fixedBlockGroup.addBlocks(blk)
             self.dropBlockGroup.clearBlocks()
             self.dropBlockGroup=None
+            self.fixedBlockGroup.processEliminate()
     
     def draw(self):
         self.fixedBlockGroup.draw(self.surface)

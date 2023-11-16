@@ -1,5 +1,5 @@
 import random
-import pygame,sys
+import pygame
 from pygame.locals import *
 from const import *
 from block import *
@@ -29,6 +29,7 @@ class BlockGroup(object):
         self.time=0
         self.pressTime={}
         self.dropInterval=300
+        self.isEliminating=False
         self.blockGroupType=blockGroupType
         for config in blockConfigList:
             blk=Block(config['blockType'],config['rowIdx'],config['colIdx'],config['blockShape'],config['blockRot'],config['blockGroupIdx'],width,height,relPos)
@@ -48,6 +49,8 @@ class BlockGroup(object):
                 for b in self.blocks:
                     b.drop()
             self.keyDownHandler()
+        for blk in self.blocks:
+            blk.update()
                     
     def getBlockIndexes(self):
         return [block.getIndex() for block in self.blocks]
@@ -96,3 +99,30 @@ class BlockGroup(object):
             for blk in self.blocks:
                 blk.doRotate()
             
+    def doEliminate(self,row):
+        eliminateRow={}
+        for col in range(0,GAME_COL):
+            idx=(row,col)
+            eliminateRow[idx]=1
+        for blk in self.blocks:
+            if eliminateRow.get(blk.getIndex()):
+                blk.startBlink()
+    def processEliminate(self):
+        hash={}
+        allIndexes=self.getBlockIndexes()
+        for idx in allIndexes:
+            hash[idx]=1
+        for row in range(GAME_ROW-1,-1,-1):
+            full=True
+            for col in range(0,GAME_COL):
+                idx=(row,col)
+                if not(hash.get(idx)):
+                    full=False
+                    break
+            if full:
+                self.doEliminate(row)
+                return 
+    def setEliminate(self,el):
+        self.isEliminating=el
+    def IsEliminating(self):
+        return self.isEliminating

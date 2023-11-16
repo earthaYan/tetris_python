@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 from const import * 
+from utils import *
 class Block(pygame.sprite.Sprite):
     def __init__(self,blockType,baseRowIdx,baseColIdx,blockShape,blockRot,blockGroupIdx,width,height,relPos):
         super().__init__()
@@ -13,6 +14,9 @@ class Block(pygame.sprite.Sprite):
         self.width=width
         self.height=height
         self.relPos=relPos
+        self.blink=False
+        self.blinkCount=0
+        self.blinkTime=0
         self.loadImage()
         self.updateImagePos()
     def loadImage(self):
@@ -26,6 +30,8 @@ class Block(pygame.sprite.Sprite):
 
     def draw(self,surface):
         self.updateImagePos()
+        if self.blink and self.blinkCount%2==0:
+            return 
         surface.blit(self.image,self.rect)
     def drop(self):
         self.baseRowIdx+=1
@@ -51,7 +57,15 @@ class Block(pygame.sprite.Sprite):
         return self.colIdx==GAME_COL-1
     def getBlockConfigIndex(self):
         return BLOCK_SHAPE[self.blockShape][self.blockRot][self.blockGroupIdx]
-    
+    def startBlink(self):
+        self.blink=True
+        self.blinkTime=getCurrentTime()
+    def update(self):
+        # 更新闪烁次数
+        if self.blink:
+            diffTime=getCurrentTime()-self.blinkTime
+            self.blinkCount=int(diffTime/30)
+        
     @property
     def rowIdx(self):
         return self.baseRowIdx+self.getBlockConfigIndex()[0]
