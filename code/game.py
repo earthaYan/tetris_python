@@ -7,6 +7,8 @@ class Game(pygame.sprite.Sprite):
         self.surface=surface
         self.gameOverImage=pygame.image.load('../pic/lose.png')
         self.isGameOver=False
+        self.scoreFont=pygame.font.Font(None,60)
+        self.score=0
         self.fixedBlockGroup=BlockGroup(BlockGroupType.FIXED,BLOCK_SIZE_W,BLOCK_SIZE_H,[],self.getRelPos())
         self.dropBlockGroup=None
     
@@ -32,7 +34,8 @@ class Game(pygame.sprite.Sprite):
                 self.fixedBlockGroup.addBlocks(blk)
             self.dropBlockGroup.clearBlocks()
             self.dropBlockGroup=None
-            self.fixedBlockGroup.processEliminate()
+            if self.fixedBlockGroup.processEliminate():
+                self.score+=1
     
     def draw(self):
         self.fixedBlockGroup.draw(self.surface)
@@ -44,7 +47,8 @@ class Game(pygame.sprite.Sprite):
             rect.centerx=GAME_WIDTH_SIZE/2
             rect.centery=GAME_HEIGHT_SIZE/2
             self.surface.blit(self.gameOverImage,rect)
-            
+        scoreTextImage=self.scoreFont.render('Score:'+str(self.score),True,(255,255,255))
+        self.surface.blit(scoreTextImage,(10,20))   
     def getRelPos(self):
         return (240,50)
     

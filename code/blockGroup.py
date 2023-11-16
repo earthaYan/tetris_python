@@ -134,7 +134,7 @@ class BlockGroup(object):
                     break
             if full:
                 self.doEliminate(row)
-                return 
+                return True
     def setEliminate(self,el):
         self.isEliminating=el
     def IsEliminating(self):
