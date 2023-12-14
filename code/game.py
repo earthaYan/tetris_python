@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 from blockGroup import *
 import json
+import utils 
 class Game(pygame.sprite.Sprite):
     def __init__(self,surface):
         super().__init__()
@@ -10,6 +11,10 @@ class Game(pygame.sprite.Sprite):
         self.isGameOver=False
         self.scoreFont=pygame.font.Font(None,60)
         self.score=0
+        if utils.checkProgressFileIsExist():
+            choice = input("Do you want to resume from your last progress? (y/n): ")
+            if choice.lower()=="y":
+                self.loadProgress()
         self.fixedBlockGroup=BlockGroup(BlockGroupType.FIXED,BLOCK_SIZE_W,BLOCK_SIZE_H,[],self.getRelPos())
         self.dropBlockGroup=None
         self.nextBlockGroup=None
@@ -98,4 +103,6 @@ class Game(pygame.sprite.Sprite):
             self.score=previousProgress['score']
         except FileNotFoundError:
             print("No previous progress found. Starting a new game...")
-            
+    def clearProgress(self):
+        if checkProgressFileIsExist():
+            os.remove("progress.json")

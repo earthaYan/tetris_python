@@ -10,15 +10,15 @@ pygame.init()
 DISPLAYSURF=pygame.display.set_mode((GAME_WIDTH_SIZE,GAME_HEIGHT_SIZE))
 game=Game(DISPLAYSURF)
 
-choice = input("Do you want to resume from your last progress? (y/n): ")
-if choice.lower()=="y":
-    game.loadProgress()
+
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
             confirm = input("Do you want to save the progress? (y/n) ")
             if confirm.lower() == 'y':
                 game.saveProgress()
+            elif confirm.lower()=='n':
+                game.clearProgress()
             pygame.quit()
             sys.exit()
     game.update() #逻辑帧
