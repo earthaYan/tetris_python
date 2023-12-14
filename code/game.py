@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 from blockGroup import *
+import json
 class Game(pygame.sprite.Sprite):
     def __init__(self,surface):
         super().__init__()
@@ -79,4 +80,22 @@ class Game(pygame.sprite.Sprite):
             if idx[0]<2:
                 self.isGameOver=True
             
-        
+    def saveProgress(self):
+        score=self.saveScore()
+        progress={
+            "score":score,
+        }
+        with open("progress.json","w") as file:
+            json.dump(progress,file)
+
+    def saveScore(self):
+        return self.score   
+    
+    def loadProgress(self):
+        try:
+            with open("progress.json","r") as file:
+                previousProgress=json.load(file)
+            self.score=previousProgress['score']
+        except FileNotFoundError:
+            print("No previous progress found. Starting a new game...")
+            
