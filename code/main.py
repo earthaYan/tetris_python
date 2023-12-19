@@ -5,7 +5,7 @@ from const import *
 from block import *
 from blockGroup import *
 from game import *
-
+import json
 pygame.init()
 DISPLAYSURF=pygame.display.set_mode((GAME_WIDTH_SIZE,GAME_HEIGHT_SIZE))
 game=Game(DISPLAYSURF)

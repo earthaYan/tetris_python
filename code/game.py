@@ -11,14 +11,14 @@ class Game(pygame.sprite.Sprite):
         self.isGameOver=False
         self.scoreFont=pygame.font.Font(None,60)
         self.score=0
-        if utils.checkProgressFileIsExist():
-            choice = input("Do you want to resume from your last progress? (y/n): ")
-            if choice.lower()=="y":
-                self.loadProgress()
         self.fixedBlockGroup=BlockGroup(BlockGroupType.FIXED,BLOCK_SIZE_W,BLOCK_SIZE_H,[],self.getRelPos())
         self.dropBlockGroup=None
         self.nextBlockGroup=None
         self.generateNextDropBlockGroup()
+        if utils.checkProgressFileIsExist():
+            choice = input("Do you want to resume from your last progress? (y/n): ")
+            if choice.lower()=="y":
+                self.loadProgress()
 
     
     def generateDropBlockGroup(self):
@@ -86,21 +86,97 @@ class Game(pygame.sprite.Sprite):
                 self.isGameOver=True
             
     def saveProgress(self):
-        score=self.saveScore()
         progress={
-            "score":score,
+            "score":self.score,
+            "fixedBlockGroup":[
+                {
+                    "row": block.rowIdx,
+                    "col": block.colIdx,
+                    "blockType": block.blockType,
+                    "blockShape": block.blockShape,
+                    "blockRot": block.blockRot,
+                    "blockGroupIdx": block.blockGroupIdx
+                } for block in self.fixedBlockGroup.blocks
+            ],
+            "dropBlockGroup": [
+                {
+                    "row": block.rowIdx,
+                    "col": block.colIdx,
+                    "blockType": block.blockType,
+                    "blockShape": block.blockShape,
+                    "blockRot": block.blockRot,
+                    "blockGroupIdx": block.blockGroupIdx
+                }   for block in self.dropBlockGroup.blocks
+            ] if self.dropBlockGroup else None,
+            "nextBlockGroup": [
+                {
+                    "row": block.rowIdx,
+                    "col": block.colIdx,
+                    "blockType": block.blockType,
+                    "blockShape": block.blockShape,
+                    "blockRot": block.blockRot,
+                    "blockGroupIdx": block.blockGroupIdx
+                } for block in self.nextBlockGroup.blocks
+            ]
         }
         with open("progress.json","w") as file:
             json.dump(progress,file)
-
-    def saveScore(self):
-        return self.score   
     
     def loadProgress(self):
         try:
             with open("progress.json","r") as file:
                 previousProgress=json.load(file)
             self.score=previousProgress['score']
+            self.fixedBlockGroup.clearBlocks()
+            for block_data in previousProgress["fixedBlockGroup"]:
+                block = Block(
+                    block_data["blockType"],
+                    block_data["row"],
+                    block_data["col"],
+                    block_data["blockShape"],
+                    block_data["blockRot"],
+                    block_data["blockGroupIdx"],
+                    BLOCK_SIZE_W,
+                    BLOCK_SIZE_H,
+                    self.getRelPos()
+                )
+                self.fixedBlockGroup.addBlocks(block)
+            if previousProgress['dropBlockGroup']:
+                self.dropBlockGroup = BlockGroup(
+                    BlockGroupType.DROP,
+                    BLOCK_SIZE_W,
+                    BLOCK_SIZE_H,
+                    [],
+                    self.getRelPos()
+                )
+                self.dropBlockGroup.clearBlocks()
+                for block_data in previousProgress["dropBlockGroup"]:
+                    block = Block(
+                        block_data["blockType"],
+                        block_data["row"],
+                        block_data["col"],
+                        block_data["blockShape"],
+                        block_data["blockRot"],
+                        block_data["blockGroupIdx"],
+                        BLOCK_SIZE_W,
+                        BLOCK_SIZE_H,
+                        self.getRelPos()
+                    )
+                    self.dropBlockGroup.addBlocks(block)
+            self.nextBlockGroup.clearBlocks()
+            for block_data in previousProgress["nextBlockGroup"]:
+                block = Block(
+                    block_data["blockType"],
+                    block_data["row"],
+                    block_data["col"],
+                    block_data["blockShape"],
+                    block_data["blockRot"],
+                    block_data["blockGroupIdx"],
+                    BLOCK_SIZE_W,
+                    BLOCK_SIZE_H,
+                    self.getRelPos()
+                )
+                self.nextBlockGroup.addBlocks(block)
         except FileNotFoundError:
             print("No previous progress found. Starting a new game...")
     def clearProgress(self):
